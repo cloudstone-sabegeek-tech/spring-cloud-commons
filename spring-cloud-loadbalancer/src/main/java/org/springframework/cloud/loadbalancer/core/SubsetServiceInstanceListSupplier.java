@@ -21,10 +21,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.jspecify.annotations.Nullable;
 import reactor.core.publisher.Flux;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
+import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactiveLoadBalancer;
 import org.springframework.cloud.commons.util.IdUtils;
 import org.springframework.core.env.PropertyResolver;
@@ -48,13 +50,26 @@ public class SubsetServiceInstanceListSupplier extends DelegatingServiceInstance
 			ReactiveLoadBalancer.Factory<ServiceInstance> factory) {
 		super(delegate);
 		LoadBalancerProperties properties = factory.getProperties(getServiceId());
+		if (properties == null) {
+			properties = new LoadBalancerProperties();
+		}
 		this.instanceId = resolveInstanceId(properties, resolver);
 		this.size = properties.getSubset().getSize();
 	}
 
 	@Override
 	public Flux<List<ServiceInstance>> get() {
-		return delegate.get().map(instances -> {
+		return get(new Request() {
+			@Override
+			public @Nullable Object getContext() {
+				return Request.super.getContext();
+			}
+		});
+	}
+
+	@Override
+	public Flux<List<ServiceInstance>> get(Request request) {
+		return delegate.get(request).map(instances -> {
 			if (instances.size() <= size) {
 				return instances;
 			}

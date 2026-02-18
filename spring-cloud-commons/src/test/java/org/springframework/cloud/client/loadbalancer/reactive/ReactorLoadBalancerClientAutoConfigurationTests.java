@@ -26,8 +26,8 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.http.client.autoconfigure.service.HttpServiceClientProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.boot.webclient.autoconfigure.service.ReactiveHttpClientServiceProperties;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancedRetryFactory;
@@ -42,6 +42,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.mockito.Mockito.mock;
 import static org.springframework.cloud.client.loadbalancer.reactive.LoadBalancerTestUtils.assertLoadBalanced;
 import static org.springframework.cloud.client.loadbalancer.reactive.LoadBalancerTestUtils.getFilters;
 
@@ -230,8 +231,8 @@ public class ReactorLoadBalancerClientAutoConfigurationTests {
 
 		@Bean
 		@Primary
-		ReactiveHttpClientServiceProperties reactiveHttpClientServiceProperties() {
-			return new ReactiveHttpClientServiceProperties();
+		HttpServiceClientProperties customeHttpServiceClientProperties() {
+			return mock(HttpServiceClientProperties.class);
 		}
 
 		private static final class TestService {

@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -58,7 +59,7 @@ public final class ServiceInstanceListSupplierBuilder {
 
 	private static final Log LOG = LogFactory.getLog(ServiceInstanceListSupplierBuilder.class);
 
-	private Creator baseCreator;
+	private @Nullable Creator baseCreator;
 
 	private final List<DelegateCreator> creators = new ArrayList<>();
 
@@ -367,7 +368,7 @@ public final class ServiceInstanceListSupplierBuilder {
 	 * @param delegateCreator a {@link DelegateCreator} object
 	 * @return the {@link ServiceInstanceListSupplierBuilder} object
 	 */
-	public ServiceInstanceListSupplierBuilder with(DelegateCreator delegateCreator) {
+	public ServiceInstanceListSupplierBuilder with(@Nullable DelegateCreator delegateCreator) {
 		if (delegateCreator != null) {
 			creators.add(delegateCreator);
 		}

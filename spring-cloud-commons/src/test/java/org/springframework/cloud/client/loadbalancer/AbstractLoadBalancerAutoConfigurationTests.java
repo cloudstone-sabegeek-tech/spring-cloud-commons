@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.restclient.autoconfigure.service.HttpClientServiceProperties;
+import org.springframework.boot.http.client.autoconfigure.service.HttpServiceClientProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
@@ -40,6 +40,7 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.mockito.Mockito.mock;
 import static org.springframework.cloud.client.loadbalancer.reactive.ReactiveLoadBalancer.REQUEST;
 
 /**
@@ -191,8 +192,8 @@ public abstract class AbstractLoadBalancerAutoConfigurationTests {
 		}
 
 		@Bean
-		HttpClientServiceProperties httpClientServiceProperties() {
-			return new HttpClientServiceProperties();
+		HttpServiceClientProperties customHttpServiceClientProperties() {
+			return mock(HttpServiceClientProperties.class);
 		}
 
 	}
@@ -285,7 +286,7 @@ public abstract class AbstractLoadBalancerAutoConfigurationTests {
 
 		@Override
 		public URI reconstructURI(ServiceInstance instance, URI original) {
-			return DefaultServiceInstance.getUri(instance);
+			return ServiceInstance.createUri(instance);
 		}
 
 	}
